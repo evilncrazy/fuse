@@ -184,4 +184,33 @@ namespace fuse {
   struct concat<Seq1, empty_seq> {
     using type = Seq1;
   };
+
+  /**
+   * Get the element at a specific index.
+   * 
+   * @tparam Seq The sequence
+   * @tparam Index The index of the element in the sequence. The index can
+   *         be a negative number, which would count from the end of the sequence.
+   */
+  template <class Seq, int Index> 
+  struct get {
+    static_assert(!std::is_same<Seq, empty_seq>::value, "Index out of bounds");
+
+    /**
+     * The element at the given index.
+     */
+    using type = typename std::conditional<
+      (Index > 0),
+      get<typename Seq::tail, Index - 1>,
+      get<Seq, size<Seq>::value + Index>
+    >::type::type;
+  };
+
+  /**
+   * Base case specialisation for get.
+   */
+  template <class Seq>
+  struct get<Seq, 0> {
+    using type = typename Seq::head;
+  };
 }

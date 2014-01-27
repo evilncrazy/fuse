@@ -1,4 +1,9 @@
 void core_test() {
+  typedef fuse::make_seq<int>::type seq1;
+  typedef fuse::make_seq<int, char>::type seq2;
+  typedef fuse::make_seq<int, char, bool>::type seq3;
+  typedef fuse::make_seq<int, char, bool, short>::type seq4;
+
   STATIC_TEST("CanCreateSingletonSeq", (
     std::is_same<fuse::seq<int>::head, int>::value &&
     std::is_same<fuse::seq<int>::tail, fuse::empty_seq>::value
@@ -12,10 +17,10 @@ void core_test() {
   ));
 
   STATIC_TEST("CanMakeSeq", (
-    std::is_same<fuse::make_seq<int, char, bool, short>::type::head, int>::value &&
-    std::is_same<fuse::make_seq<int, char, bool, short>::type::tail::head, char>::value &&
-    std::is_same<fuse::make_seq<int, char, bool, short>::type::tail::tail::head, bool>::value &&
-    std::is_same<fuse::make_seq<int, char, bool, short>::type::tail::tail::tail::head, short>::value
+    std::is_same<seq4::head, int>::value &&
+    std::is_same<seq4::tail::head, char>::value &&
+    std::is_same<seq4::tail::tail::head, bool>::value &&
+    std::is_same<seq4::tail::tail::tail::head, short>::value
   ));
 
   STATIC_TEST("EmptySeqsAreIgnored", (
@@ -64,6 +69,30 @@ void core_test() {
     fuse::equal<
       fuse::concat<fuse::make_seq<int, char>::type, fuse::make_seq<bool, short>::type>::type,
       fuse::make_seq<int, char, bool, short>::type
+    >::value
+  ));
+
+  STATIC_TEST("CanGetNonNegativeIndices", (
+    fuse::equal<
+      fuse::make_seq<
+        fuse::get<seq4, 0>::type,
+        fuse::get<seq4, 1>::type,
+        fuse::get<seq4, 2>::type,
+        fuse::get<seq4, 3>::type
+      >::type,
+      seq4
+    >::value
+  ));
+
+  STATIC_TEST("CanGetNegativeIndices", (
+    fuse::equal<
+      fuse::make_seq<
+        fuse::get<seq4, -4>::type,
+        fuse::get<seq4, -3>::type,
+        fuse::get<seq4, -2>::type,
+        fuse::get<seq4, -1>::type
+      >::type,
+      seq4
     >::value
   ));
 }
