@@ -214,3 +214,5 @@ namespace fuse {
     using type = typename Seq::head;
   };
 }
+
+#include "functional.hpp"

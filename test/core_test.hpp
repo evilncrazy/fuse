@@ -95,4 +95,53 @@ void core_test() {
       seq4
     >::value
   ));
+
+  STATIC_TEST("CanMapEmptyList", (
+    std::is_same<
+      fuse::map<std::add_const, fuse::empty_seq>::type,
+      fuse::empty_seq
+    >::value
+  ));
+
+  STATIC_TEST("CanMapAddConst", (
+    fuse::equal<
+      fuse::map<std::add_const, seq4>::type,
+      fuse::make_seq<const int, const char, const bool, const short>::type
+    >::value
+  ));
+
+  STATIC_TEST("CanReduceTwoItems", (
+    std::is_same<
+      fuse::reduce<std::common_type, fuse::make_seq<int, short>::type>::type,
+      int
+    >::value
+  ));
+
+  STATIC_TEST("CanReduceThreeItems", (
+    std::is_same<
+      fuse::reduce<std::common_type, fuse::make_seq<int, short, double>::type>::type,
+      double
+    >::value
+  ));
+
+  STATIC_TEST("CanFilterEmptyList", (
+    fuse::equal<
+      fuse::filter<std::is_const, fuse::empty_seq>::type,
+      fuse::empty_seq
+    >::value
+  ));
+
+  STATIC_TEST("CanFilterSingleItemPositive", (
+    fuse::equal<
+      fuse::filter<std::is_integral, seq1>::type,
+      seq1
+    >::value
+  ));
+
+  STATIC_TEST("CanFilterSingleItemNegative", (
+    fuse::equal<
+      fuse::filter<std::is_const, seq1>::type,
+      fuse::empty_seq
+    >::value
+  ));
 }
